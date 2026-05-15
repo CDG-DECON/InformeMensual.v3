@@ -331,6 +331,7 @@
             padding: 2rem;
             box-shadow: var(--card-shadow);
             margin-bottom: 2rem;
+            position: relative;
         }
 
         .chart-header {
@@ -365,6 +366,47 @@
             font-style: italic;
             margin-top: 1rem;
             text-align: center;
+        }
+
+        .historical-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            display: none;
+            z-index: 100;
+        }
+
+        .historical-overlay.active {
+            display: block;
+        }
+
+        .historical-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .historical-close:hover {
+            background: #dc2626;
+            transform: scale(1.1);
         }
 
         .table-card {
@@ -676,10 +718,10 @@
             }
         });
 
+        // Datos embebidos del Excel actualizado
         const dataStore = {
             'proyeccion': {
                 month: 'Proyección Próximo Período',
-                isProjection: true,
                 certifProyectado: {
                     obras: ['SM', 'ARN', 'PEDR', 'LMB', 'SUP (Etapa 2)', 'DELG', 'SFE'],
                     certifPrevisto: [99181664.22, 24452989.37, 101563495.51, 37033666.23, 24982417, 28321400, 25422533],
@@ -688,6 +730,10 @@
             },
             '2026-04': {
                 month: 'Abril 2026',
+                promPonderado: {
+                    martella: 0.93,
+                    therock: 0.87
+                },
                 idxs: {
                     obras: ['SM', 'ARN', 'PEDR', 'LMB', 'SUP', 'DELG'],
                     martella: {
@@ -705,13 +751,17 @@
                     certifReal: [114084207.62, 25426406.55, 46210155.63, 31550140.71, 39439108, 49249, 10703167, 10198272.11],
                     certifPrevisto: [104669033.65, 27503464.99, 95320293.01, 34274963.32, 0, 0, 0, 0],
                     desvio: [9415173.97, -2077058.44, -49110137.37, -2724822.60, null, null, null, null],
-                    desvioPct: [0.0900, -0.0755, -0.5152, -0.0795, null, null, null, null],
+                    desvioPct: [0.089952, -0.07552, -0.515212, -0.079499, null, null, null, null],
                     adicionales: [null, null, 0, 1368776, 0, 0, 0, 0],
                     isPampUSD: [false, false, false, false, false, true, false, false]
                 }
             },
             '2026-03': {
                 month: 'Marzo 2026',
+                promPonderado: {
+                    martella: 1.005,
+                    therock: 0.795
+                },
                 idxs: {
                     obras: ['SM', 'ARN', 'PEDR', 'LMB', 'SUP'],
                     martella: {
@@ -736,9 +786,39 @@
             }
         };
 
+        // Serie histórica de IDXs
+        const serieHistorica = {
+            periodos: ['1Q JUN 25', '2Q JUN 25', '1Q JUL 25', '2Q JUL 25', '1Q AGO 25', '2Q AGO 25', '1Q SEP 25', '2Q SEP 25', '1Q OCT 25', '2Q OCT 25', '1Q NOV 35', '2Q NOV 25', '1Q DIC 25', '2Q DIC 25', '1Q ENE 26', '2Q ENE 26', '1Q FEB 26', '2Q FEB 26', '1Q MAR 26', '2Q MAR 26', '1Q ABR 26', '2Q ABR 26'],
+            SM: {
+                martella: [null, null, null, null, null, 1.115847, 1.183721, 1.189447, 1.151995, 1.123038, 1.115104, 1.108319, 1.106571, 1.050044, 1.009819, 1.066293, 1.059496, 1.049451, 1.069594, 1.044371, 0.937011, 0.916526],
+                therock: [null, null, null, null, null, null, 0.839712, 1.458748, 0.598924, 1.050124, 0.904093, 0.866942, 0.2894, 0.566873, 0.581981, 0.645977, 0.625847, 1.372639, 1.144446, 0.897804, 1.087458, 0.651776]
+            },
+            ARN: {
+                martella: [null, null, null, null, null, null, null, null, null, null, null, null, null, 1.078391, 1.098652, 1.108733, 1.093075, 1.06589, 1.052659, 1.03034, 0.986949, 1.015828],
+                therock: [null, null, null, null, null, null, null, null, null, null, null, null, null, 0.905408, 0.690729, 0.75578, 1.145958, 0.588114, 0.528635, 0.621955, 0.996892, 0.58564]
+            },
+            PEDR: {
+                martella: [0.914615, 0.922471, 0.985411, 1.01828, 1.044867, 1.013843, 1.002451, 1.022721, 1.039887, 1.030427, 1.026231, 1.038668, 1.038504, 1.044638, 1.040479, 1.050479, 1.086741, 1.028214, 1.045389, 1.047058, 1.056107, 1.03419],
+                therock: [0.053553, 0.161639, 0.380693, 0.578989, 0.602837, 0.960826, 1.179659, 1.198941, 1.122449, 0.801551, 0.94817, 0.616795, 0.662633, 0.589523, 0.990928, 1.253597, 0.556612, 0.685628, 1.024847, 1.178592, 1.176437, 0.462322]
+            },
+            LMB: {
+                martella: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1.358209, 0.949322, 0.974911, 0.965519, 0.962692, 0.948769],
+                therock: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0.262153, 0.441787, 1.280461, 0.691979, 1.393914, 1.248062]
+            },
+            SUP: {
+                martella: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0.925305, 0.926534, 0.98105, 0.945229, 0.954968, 0.944497],
+                therock: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1.02, null, 0.4, null, 1.02, null]
+            },
+            DELG: {
+                martella: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0.92, 0.93, 0.93],
+                therock: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0.12, null, null]
+            }
+        };
+
         let currentPeriod = '2026-04';
         let idxChart = null;
         let certifChart = null;
+        let historicalChart = null;
 
         function formatCurrency(value, isUSD = false) {
             if (value === null || value === undefined) return '-';
@@ -865,10 +945,10 @@
                 calcularPromedioObra(data.idxs.therock.q1[i], data.idxs.therock.q2[i])
             );
             
-            const avgMartella = calcularPromedio(promediosMartellaObras);
-            const avgTheRock = calcularPromedio(promediosTheRockObras);
+            // Usar promedio ponderado del Excel
+            const avgMartella = data.promPonderado.martella;
+            const avgTheRock = data.promPonderado.therock;
             
-            // Calcular total excluyendo PAMP
             const totalCertifReal = data.certif.certifReal.reduce((sum, val, i) => {
                 if (data.certif.obras[i] !== 'PAMP') return sum + val;
                 return sum;
@@ -887,14 +967,8 @@
 
             if (period === '2026-04') {
                 const dataPrev = dataStore['2026-03'];
-                const promediosMartellaObrasPrev = dataPrev.idxs.obras.map((obra, i) => 
-                    calcularPromedioObra(dataPrev.idxs.martella.q1[i], dataPrev.idxs.martella.q2[i])
-                );
-                const promediosTheRockObrasPrev = dataPrev.idxs.obras.map((obra, i) => 
-                    calcularPromedioObra(dataPrev.idxs.therock.q1[i], dataPrev.idxs.therock.q2[i])
-                );
-                const avgMartellaPrev = calcularPromedio(promediosMartellaObrasPrev);
-                const avgTheRockPrev = calcularPromedio(promediosTheRockObrasPrev);
+                const avgMartellaPrev = dataPrev.promPonderado.martella;
+                const avgTheRockPrev = dataPrev.promPonderado.therock;
                 const totalCertifRealPrev = dataPrev.certif.certifReal.reduce((sum, val, i) => {
                     if (dataPrev.certif.obras[i] !== 'PAMP') return sum + val;
                     return sum;
@@ -918,8 +992,16 @@
                 
                 const martellaActual = promediosMartellaObras[i];
                 const therockActual = promediosTheRockObras[i];
-                const martellaPrev = calcularPromedioObra(dataPrev.idxs.martella.q1[indexPrev], dataPrev.idxs.martella.q2[indexPrev]);
-                const therockPrev = calcularPromedioObra(dataPrev.idxs.therock.q1[indexPrev], dataPrev.idxs.therock.q2[indexPrev]);
+                
+                const promediosMartellaObrasPrev = dataPrev.idxs.obras.map((obra, i) => 
+                    calcularPromedioObra(dataPrev.idxs.martella.q1[i], dataPrev.idxs.martella.q2[i])
+                );
+                const promediosTheRockObrasPrev = dataPrev.idxs.obras.map((obra, i) => 
+                    calcularPromedioObra(dataPrev.idxs.therock.q1[i], dataPrev.idxs.therock.q2[i])
+                );
+                
+                const martellaPrev = promediosMartellaObrasPrev[indexPrev];
+                const therockPrev = promediosTheRockObrasPrev[indexPrev];
                 
                 return {
                     martella: getChangeIndicator(martellaActual, martellaPrev),
@@ -931,8 +1013,8 @@
 
             container.innerHTML = `
                 <div class="two-col-metrics">
-                       <div class="metric-card">
-                        <div class="metric-label">Martella IDX Promedio - Todas las Obras</div>
+                    <div class="metric-card">
+                        <div class="metric-label">Martella IDX Promedio Ponderado - Todas las Obras</div>
                         <div class="metric-header">
                             <div class="metric-value">${formatNumber(avgMartella)}</div>
                             ${martellaChange ? `<div>${martellaChange}</div>` : ''}
@@ -943,8 +1025,8 @@
                         </div>
                     </div>
 
-   <div class="metric-card">
-                        <div class="metric-label">The Rock IDX Promedio - Todas las Obras</div>
+                    <div class="metric-card">
+                        <div class="metric-label">The Rock IDX Promedio Ponderado - Todas las Obras</div>
                         <div class="metric-header">
                             <div class="metric-value">${formatNumber(avgTheRock)}</div>
                             ${therockChange ? `<div>${therockChange}</div>` : ''}
@@ -956,16 +1038,25 @@
                     </div>
                 </div>
 
-                <div class="chart-card">
+                <div class="chart-card" id="idx-chart-container">
                     <div class="chart-header">
                         <div>
                             <h3 class="chart-title">Índices de Rendimiento por Obra</h3>
                             <p class="chart-subtitle">${data.month}</p>
                             ${period === '2026-04' ? '<p class="chart-legend-note">Indicadores sobre barras: variación vs. período anterior</p>' : ''}
+                            <p class="chart-legend-note" style="color: var(--primary); margin-top: 0.5rem;">💡 Haz clic en una barra para ver la serie histórica de esa obra</p>
                         </div>
                     </div>
                     <div style="position: relative; height: 420px;">
                         <canvas id="idxChart"></canvas>
+                    </div>
+                    
+                    <div class="historical-overlay" id="historical-overlay">
+                        <button class="historical-close" onclick="closeHistorical()">×</button>
+                        <h3 class="chart-title" id="historical-title" style="margin-bottom: 1.5rem;">Serie Histórica</h3>
+                        <div style="position: relative; height: calc(100% - 80px);">
+                            <canvas id="historicalChart"></canvas>
+                        </div>
                     </div>
                     
                     <div class="legend-box">
@@ -1055,20 +1146,13 @@
                             ${certifPrevistoChange ? 'vs. certificado previsto período anterior' : 'Certificación prevista del período'}
                         </div>
                     </div>
+                    
                     <div class="metric-card">
-        <div class="metric-label">
-            Total Adicionales
-        </div>
-
-        <div class="metric-value" style="font-size: 1.85rem;">
-            ${formatCurrency(totalAdicionales)}
-        </div>
-
-        <div class="metric-change">
-            Adicionales certificados del período
-        </div>
-    </div>
-</div>
+                        <div class="metric-label">Total Adicionales</div>
+                        <div class="metric-value" style="font-size: 1.85rem;">${formatCurrency(totalAdicionales)}</div>
+                        <div class="metric-change">Adicionales certificados del período</div>
+                    </div>
+                </div>
 
                 <div class="certif-grid">
                     <div class="table-card">
@@ -1177,6 +1261,14 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    onClick: (event, activeElements) => {
+                        if (activeElements.length > 0) {
+                            const datasetIndex = activeElements[0].datasetIndex;
+                            const index = activeElements[0].index;
+                            const obra = data.idxs.obras[index];
+                            showHistorical(obra, datasetIndex);
+                        }
+                    },
                     layout: {
                         padding: {
                             top: 40
@@ -1278,6 +1370,135 @@
                         });
                     }
                 }]
+            });
+        }
+
+        function showHistorical(obra, datasetIndex) {
+            const overlay = document.getElementById('historical-overlay');
+            const title = document.getElementById('historical-title');
+            const indexType = datasetIndex === 0 ? 'Martella IDX' : 'The Rock IDX';
+            
+            title.textContent = `Serie Histórica - ${obra} - ${indexType}`;
+            overlay.classList.add('active');
+            
+            renderHistoricalChart(obra);
+        }
+
+        function closeHistorical() {
+            const overlay = document.getElementById('historical-overlay');
+            overlay.classList.remove('active');
+            if (historicalChart) {
+                historicalChart.destroy();
+                historicalChart = null;
+            }
+        }
+
+        function renderHistoricalChart(obra) {
+            const ctx = document.getElementById('historicalChart');
+            
+            if (historicalChart) {
+                historicalChart.destroy();
+            }
+
+            const obraData = serieHistorica[obra];
+            if (!obraData) return;
+
+            const martellaData = obraData.martella.map((val, i) => ({
+                x: serieHistorica.periodos[i],
+                y: val
+            })).filter(p => p.y !== null);
+
+            const therockData = obraData.therock.map((val, i) => ({
+                x: serieHistorica.periodos[i],
+                y: val
+            })).filter(p => p.y !== null);
+
+            historicalChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Martella IDX',
+                            data: martellaData,
+                            borderColor: '#0066CC',
+                            backgroundColor: 'rgba(0, 102, 204, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            pointRadius: 5,
+                            pointHoverRadius: 7
+                        },
+                        {
+                            label: 'The Rock IDX',
+                            data: therockData,
+                            borderColor: '#DC3545',
+                            backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            pointRadius: 5,
+                            pointHoverRadius: 7
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    weight: 'bold',
+                                    family: 'Manrope'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            padding: 12,
+                            titleFont: {
+                                size: 14,
+                                weight: '700',
+                                family: 'Manrope'
+                            },
+                            bodyFont: {
+                                size: 13,
+                                family: 'JetBrains Mono'
+                            }
+                        },
+                        datalabels: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'JetBrains Mono'
+                                }
+                            }
+                        },
+                        x: {
+                            type: 'category',
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45,
+                                font: {
+                                    family: 'JetBrains Mono',
+                                    size: 10
+                                }
+                            }
+                        }
+                    }
+                }
             });
         }
 
@@ -1419,6 +1640,8 @@
                 
                 const period = this.dataset.period;
                 currentPeriod = period;
+                
+                closeHistorical();
                 
                 const loading = document.querySelector('.loading');
                 const content = document.getElementById('dashboard-content');
