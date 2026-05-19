@@ -786,9 +786,9 @@
             }
         };
 
-        // Serie histórica de IDXs
+        // Serie histórica de IDXs por obra
         const serieHistorica = {
-            periodos: ['1Q JUN 25', '2Q JUN 25', '1Q JUL 25', '2Q JUL 25', '1Q AGO 25', '2Q AGO 25', '1Q SEP 25', '2Q SEP 25', '1Q OCT 25', '2Q OCT 25', '1Q NOV 35', '2Q NOV 25', '1Q DIC 25', '2Q DIC 25', '1Q ENE 26', '2Q ENE 26', '1Q FEB 26', '2Q FEB 26', '1Q MAR 26', '2Q MAR 26', '1Q ABR 26', '2Q ABR 26'],
+            periodos: ['1Q JUN 25', '2Q JUN 25', '1Q JUL 25', '2Q JUL 25', '1Q AGO 25', '2Q AGO 25', '1Q SEP 25', '2Q SEP 25', '1Q OCT 25', '2Q OCT 25', '1Q NOV 25', '2Q NOV 25', '1Q DIC 25', '2Q DIC 25', '1Q ENE 26', '2Q ENE 26', '1Q FEB 26', '2Q FEB 26', '1Q MAR 26', '2Q MAR 26', '1Q ABR 26', '2Q ABR 26'],
             SM: {
                 martella: [null, null, null, null, null, 1.115847, 1.183721, 1.189447, 1.151995, 1.123038, 1.115104, 1.108319, 1.106571, 1.050044, 1.009819, 1.066293, 1.059496, 1.049451, 1.069594, 1.044371, 0.937011, 0.916526],
                 therock: [null, null, null, null, null, null, 0.839712, 1.458748, 0.598924, 1.050124, 0.904093, 0.866942, 0.2894, 0.566873, 0.581981, 0.645977, 0.625847, 1.372639, 1.144446, 0.897804, 1.087458, 0.651776]
@@ -813,6 +813,13 @@
                 martella: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0.92, 0.93, 0.93],
                 therock: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0.12, null, null]
             }
+        };
+
+        // Serie histórica de IDX promedio ponderado (todos los periodos)
+        const promedioPonderadoHistorico = {
+            periodos: ['1Q JUN 25', '2Q JUN 25', '1Q JUL 25', '2Q JUL 25', '1Q AGO 25', '2Q AGO 25', '1Q SEP 25', '2Q SEP 25', '1Q OCT 25', '2Q OCT 25', '1Q NOV 25', '2Q NOV 25', '1Q DIC 25', '2Q DIC 25', '1Q ENE 26', '2Q ENE 26', '1Q FEB 26', '2Q FEB 26', '1Q MAR 26', '2Q MAR 26', '1Q ABR 26', '2Q ABR 26'],
+            martella: [0.914615, 0.919725, 0.964579, 0.991429, 1.009547, 1.056693, 1.063056, 1.078331, 1.070949, 1.061654, 1.062138, 1.052358, 1.055414, 1.051024, 1.046964, 1.063756, 1.09212, 1.052595, 1.054308, 1.043361, 1.024119, 1.020071],
+            therock: [0.053553, 0.123864, 0.299239, 0.439114, 0.494622, 0.604042, 0.759834, 1.060798, 0.894394, 0.899818, 0.913287, 0.790594, 0.584689, 0.627871, 0.743622, 0.724511, 0.664665, 0.818801, 0.706829, 0.765135, 0.929009, 0.807644]
         };
 
         let currentPeriod = '2026-04';
@@ -930,6 +937,9 @@
         }
 
         function renderDashboard(period) {
+            // Cerrar overlay histórico si está abierto
+            closeHistorical();
+            
             if (period === 'proyeccion') {
                 renderProjection();
                 return;
@@ -1263,10 +1273,9 @@
                     maintainAspectRatio: false,
                     onClick: (event, activeElements) => {
                         if (activeElements.length > 0) {
-                            const datasetIndex = activeElements[0].datasetIndex;
                             const index = activeElements[0].index;
                             const obra = data.idxs.obras[index];
-                            showHistorical(obra, datasetIndex);
+                            showHistorical(obra);
                         }
                     },
                     layout: {
@@ -1373,12 +1382,11 @@
             });
         }
 
-        function showHistorical(obra, datasetIndex) {
+        function showHistorical(obra) {
             const overlay = document.getElementById('historical-overlay');
             const title = document.getElementById('historical-title');
-            const indexType = datasetIndex === 0 ? 'Martella IDX' : 'The Rock IDX';
             
-            title.textContent = `Serie Histórica - ${obra} - ${indexType}`;
+            title.textContent = `Serie Histórica - ${obra}`;
             overlay.classList.add('active');
             
             renderHistoricalChart(obra);
@@ -1413,12 +1421,23 @@
                 y: val
             })).filter(p => p.y !== null);
 
+            // Datos de promedio ponderado
+            const promMartella = promedioPonderadoHistorico.martella.map((val, i) => ({
+                x: promedioPonderadoHistorico.periodos[i],
+                y: val
+            }));
+
+            const promTheRock = promedioPonderadoHistorico.therock.map((val, i) => ({
+                x: promedioPonderadoHistorico.periodos[i],
+                y: val
+            }));
+
             historicalChart = new Chart(ctx, {
                 type: 'line',
                 data: {
                     datasets: [
                         {
-                            label: 'Martella IDX',
+                            label: `${obra} - Martella IDX`,
                             data: martellaData,
                             borderColor: '#0066CC',
                             backgroundColor: 'rgba(0, 102, 204, 0.1)',
@@ -1428,7 +1447,7 @@
                             pointHoverRadius: 7
                         },
                         {
-                            label: 'The Rock IDX',
+                            label: `${obra} - The Rock IDX`,
                             data: therockData,
                             borderColor: '#DC3545',
                             backgroundColor: 'rgba(220, 53, 69, 0.1)',
@@ -1436,6 +1455,28 @@
                             tension: 0.4,
                             pointRadius: 5,
                             pointHoverRadius: 7
+                        },
+                        {
+                            label: 'Prom. Pond. - Martella IDX',
+                            data: promMartella,
+                            borderColor: '#0066CC',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            tension: 0.4,
+                            pointRadius: 0,
+                            pointHoverRadius: 0
+                        },
+                        {
+                            label: 'Prom. Pond. - The Rock IDX',
+                            data: promTheRock,
+                            borderColor: '#DC3545',
+                            backgroundColor: 'transparent',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            tension: 0.4,
+                            pointRadius: 0,
+                            pointHoverRadius: 0
                         }
                     ]
                 },
@@ -1448,10 +1489,12 @@
                             position: 'top',
                             labels: {
                                 font: {
-                                    size: 14,
+                                    size: 12,
                                     weight: 'bold',
                                     family: 'Manrope'
-                                }
+                                },
+                                usePointStyle: true,
+                                padding: 15
                             }
                         },
                         tooltip: {
@@ -1475,7 +1518,8 @@
                         y: {
                             beginAtZero: true,
                             grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
+                                color: 'rgba(0, 0, 0, 0.1)',
+                                drawBorder: true
                             },
                             ticks: {
                                 font: {
@@ -1486,7 +1530,9 @@
                         x: {
                             type: 'category',
                             grid: {
-                                display: false
+                                display: true,
+                                color: 'rgba(0, 0, 0, 0.1)',
+                                borderDash: [3, 3]
                             },
                             ticks: {
                                 maxRotation: 45,
@@ -1640,8 +1686,6 @@
                 
                 const period = this.dataset.period;
                 currentPeriod = period;
-                
-                closeHistorical();
                 
                 const loading = document.querySelector('.loading');
                 const content = document.getElementById('dashboard-content');
