@@ -889,6 +889,17 @@
             }
         }
 
+        function closeHistorical() {
+            const overlay = document.getElementById('historical-overlay');
+            if (overlay) {
+                overlay.classList.remove('active');
+            }
+            if (historicalChart) {
+                historicalChart.destroy();
+                historicalChart = null;
+            }
+        }
+
         function renderProjection() {
             const data = dataStore['proyeccion'];
             const container = document.getElementById('dashboard-content');
@@ -1232,8 +1243,10 @@
                 ` : ''}
             `;
 
-            renderIdxChart(data, promediosMartellaObras, promediosTheRockObras, cambiosPorObra);
-            renderCertifChart(data);
+            setTimeout(() => {
+                renderIdxChart(data, promediosMartellaObras, promediosTheRockObras, cambiosPorObra);
+                renderCertifChart(data);
+            }, 100);
         }
 
         function renderIdxChart(data, promediosMartella, promediosTheRock, cambios) {
@@ -1390,15 +1403,6 @@
             overlay.classList.add('active');
             
             renderHistoricalChart(obra);
-        }
-
-        function closeHistorical() {
-            const overlay = document.getElementById('historical-overlay');
-            overlay.classList.remove('active');
-            if (historicalChart) {
-                historicalChart.destroy();
-                historicalChart = null;
-            }
         }
 
         function renderHistoricalChart(obra) {
