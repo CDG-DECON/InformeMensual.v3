@@ -1425,16 +1425,35 @@
                 y: val
             })).filter(p => p.y !== null);
 
-            // Datos de promedio ponderado
-            const promMartella = promedioPonderadoHistorico.martella.map((val, i) => ({
-                x: promedioPonderadoHistorico.periodos[i],
-                y: val
-            }));
+            // Determinar el rango de periodos donde la obra tiene datos
+            const periodosConDatos = new Set();
+            obraData.martella.forEach((val, i) => {
+                if (val !== null) periodosConDatos.add(i);
+            });
+            obraData.therock.forEach((val, i) => {
+                if (val !== null) periodosConDatos.add(i);
+            });
+            
+            const indicesConDatos = Array.from(periodosConDatos).sort((a, b) => a - b);
+            const minIndex = Math.min(...indicesConDatos);
+            const maxIndex = Math.max(...indicesConDatos);
 
-            const promTheRock = promedioPonderadoHistorico.therock.map((val, i) => ({
-                x: promedioPonderadoHistorico.periodos[i],
-                y: val
-            }));
+            // Datos de promedio ponderado solo para el rango de periodos donde la obra existe
+            const promMartella = promedioPonderadoHistorico.martella
+                .map((val, i) => ({
+                    x: promedioPonderadoHistorico.periodos[i],
+                    y: val,
+                    index: i
+                }))
+                .filter(p => p.index >= minIndex && p.index <= maxIndex);
+
+            const promTheRock = promedioPonderadoHistorico.therock
+                .map((val, i) => ({
+                    x: promedioPonderadoHistorico.periodos[i],
+                    y: val,
+                    index: i
+                }))
+                .filter(p => p.index >= minIndex && p.index <= maxIndex);
 
             historicalChart = new Chart(ctx, {
                 type: 'line',
