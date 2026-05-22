@@ -18,6 +18,7 @@
             --danger: #ef4444;
             --bg-dark: #0f172a;
             --bg-light: #f8fafc;
+            --gray-highlight: #e5e7eb;
             --text-dark: #1e293b;
             --text-light: #64748b;
             --border: #e2e8f0;
@@ -402,6 +403,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
+            z-index: 101;
         }
 
         .historical-close:hover {
@@ -416,6 +418,7 @@
             box-shadow: var(--card-shadow);
             overflow: hidden;
             margin-bottom: 2rem;
+            position: relative;
         }
 
         .data-table {
@@ -486,8 +489,33 @@
             background-color: var(--accent-light) !important;
         }
 
+        .gray-highlight-col {
+            background-color: var(--gray-highlight) !important;
+        }
+
         .merged-cell {
             background-color: var(--bg-light) !important;
+        }
+
+        .clickable-coef {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .clickable-coef:hover {
+            background-color: var(--primary) !important;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .coef-hint {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            font-style: italic;
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
         }
 
         .badge {
@@ -588,19 +616,6 @@
             padding: 3rem;
             color: white;
             font-size: 1.25rem;
-        }
-
-        .certif-grid {
-            display: grid;
-            grid-template-columns: 1.8fr 1fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        @media (max-width: 1200px) {
-            .certif-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         .change-indicator {
@@ -737,12 +752,12 @@
                 idxs: {
                     obras: ['SM', 'ARN', 'PEDR', 'LMB', 'SUP', 'DELG'],
                     martella: {
-                        q1: [0.94, 0.99, 1.06, 0.962692, 0.95, 0.93],
-                        q2: [0.92, 1.02, 1.03, 0.948769, null, 0.93]
+                        q1: [0.937011, 0.986949, 1.056107, 0.962692, 0.954968, 0.93],
+                        q2: [0.916526, 1.015828, 1.03419, 0.948769, 0.944497, 0.93]
                     },
                     therock: {
-                        q1: [1.09, 1, 1.18, 1.393914, 1.02, 0.12],
-                        q2: [0.65, 0.59, 0.46, 1.248062, null, null]
+                        q1: [1.087458, 0.996892, 1.176437, 1.33, 1.02, 0.12],
+                        q2: [0.651776, 0.58564, 0.462322, 0.74, 1.02, 0.12]
                     }
                 },
                 certif: {
@@ -752,8 +767,18 @@
                     certifPrevisto: [104669033.65, 27503464.99, 95320293.01, 34274963.32, 0, 0, 0, 0],
                     desvio: [9415173.97, -2077058.44, -49110137.37, -2724822.60, null, null, null, null],
                     desvioPct: [0.089952, -0.07552, -0.515212, -0.079499, null, null, null, null],
-                    adicionales: [null, null, 0, 1368776, 0, 0, 0, 0],
+                    adicionales: [null, null, 0, 1241258, 0, 0, 0, 0],
                     isPampUSD: [false, false, false, false, false, true, false, false]
+                },
+                kpase: {
+                    'SM': { pase_licitacion: 1.21, pase_esperado: 1.29, coef_pase: 0.937984 },
+                    'ARN': { pase_licitacion: 1.32, pase_esperado: 1.23, coef_pase: 1.073171 },
+                    'PEDR ALB': { pase_licitacion: 1.4, pase_esperado: 1.45, coef_pase: 0.965517 },
+                    'LMB': { pase_licitacion: 1.29, pase_esperado: 1.23, coef_pase: 1.04878 },
+                    'SUP (Etapa 1)': { pase_licitacion: 1.47, pase_esperado: 1.27, coef_pase: 1.15748 },
+                    'PAMP': { pase_licitacion: null, pase_esperado: null, coef_pase: null },
+                    'OH PAMPA': { pase_licitacion: null, pase_esperado: null, coef_pase: null },
+                    'DELG': { pase_licitacion: 1.31, pase_esperado: 1.29, coef_pase: 1.015504 }
                 }
             },
             '2026-03': {
@@ -782,6 +807,16 @@
                     desvioPct: [0.2305, -0.1839, 0.0156, -0.6519, -0.1877, null, null],
                     adicionales: [2296000, 3023956, 0, 10509273, 0, 0, 0],
                     isPampUSD: [false, false, false, false, false, true, false]
+                },
+                kpase: {
+                    'SM': { pase_licitacion: 1.21, pase_esperado: 1.22, coef_pase: 0.991803 },
+                    'ARN': { pase_licitacion: 1.32, pase_esperado: 1.26, coef_pase: 1.047619 },
+                    'PEDR ALB': { pase_licitacion: 1.4, pase_esperado: 1.5, coef_pase: 0.933333 },
+                    'LMB': { pase_licitacion: 1.29, pase_esperado: 1.26, coef_pase: 1.02381 },
+                    'SUP': { pase_licitacion: 1.34, pase_esperado: 1.18, coef_pase: 1.135593 },
+                    'PAMP': { pase_licitacion: 1.5, pase_esperado: 2.39, coef_pase: 0.627615 },
+                    'OH PAMPA': { pase_licitacion: 1.7, pase_esperado: 1.78, coef_pase: 0.955056 },
+                    'DELG': { pase_licitacion: 1.31, pase_esperado: 1.33, coef_pase: 0.984962 }
                 }
             }
         };
@@ -803,29 +838,90 @@
             },
             LMB: {
                 martella: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1.358209, 0.949322, 0.974911, 0.965519, 0.962692, 0.948769],
-                therock: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0.262153, 0.441787, 1.280461, 0.691979, 1.393914, 1.248062]
+                therock: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0.262153, 0.441787, 1.280461, 0.691979, 1.33, 0.74]
             },
             SUP: {
                 martella: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0.925305, 0.926534, 0.98105, 0.945229, 0.954968, 0.944497],
-                therock: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1.02, null, 0.4, null, 1.02, null]
+                therock: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 1.02, null, 0.4, null, 1.02, 1.02]
             },
             DELG: {
                 martella: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0.92, 0.93, 0.93],
-                therock: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0.12, null, null]
+                therock: [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 0.12, 0.12, 0.12]
             }
         };
 
-        // Serie histórica de IDX promedio ponderado (todos los periodos)
+        // Serie histórica de IDX promedio ponderado
         const promedioPonderadoHistorico = {
             periodos: ['1Q JUN 25', '2Q JUN 25', '1Q JUL 25', '2Q JUL 25', '1Q AGO 25', '2Q AGO 25', '1Q SEP 25', '2Q SEP 25', '1Q OCT 25', '2Q OCT 25', '1Q NOV 25', '2Q NOV 25', '1Q DIC 25', '2Q DIC 25', '1Q ENE 26', '2Q ENE 26', '1Q FEB 26', '2Q FEB 26', '1Q MAR 26', '2Q MAR 26', '1Q ABR 26', '2Q ABR 26'],
             martella: [0.914615, 0.919725, 0.964579, 0.991429, 1.009547, 1.056693, 1.063056, 1.078331, 1.070949, 1.061654, 1.062138, 1.052358, 1.055414, 1.051024, 1.046964, 1.063756, 1.09212, 1.052595, 1.054308, 1.043361, 1.024119, 1.020071],
             therock: [0.053553, 0.123864, 0.299239, 0.439114, 0.494622, 0.604042, 0.759834, 1.060798, 0.894394, 0.899818, 0.913287, 0.790594, 0.584689, 0.627871, 0.743622, 0.724511, 0.664665, 0.818801, 0.706829, 0.765135, 0.929009, 0.807644]
         };
 
+        // Serie histórica de k y pase
+        const kpaseHistorico = {
+            'SM': [
+                { periodo: '1Q ENE 26', pase_esperado: 1.17, coef_pase: 1.034188 },
+                { periodo: '2Q ENE 26', pase_esperado: 1.17, coef_pase: 1.034188 },
+                { periodo: '1Q FEB 26', pase_esperado: 1.19, coef_pase: 1.016807 },
+                { periodo: '2Q FEB 26', pase_esperado: 1.19, coef_pase: 1.016807 },
+                { periodo: '1Q MAR 26', pase_esperado: 1.22, coef_pase: 0.991803 },
+                { periodo: '2Q MAR 26', pase_esperado: 1.22, coef_pase: 0.991803 },
+                { periodo: '1Q ABR 26', pase_esperado: 1.29, coef_pase: 0.937984 },
+                { periodo: '2Q ABR 26', pase_esperado: 1.29, coef_pase: 0.937984 }
+            ],
+            'ARN': [
+                { periodo: '1Q ENE 26', pase_esperado: 1.35, coef_pase: 1.014815 },
+                { periodo: '2Q ENE 26', pase_esperado: 1.35, coef_pase: 1.014815 },
+                { periodo: '1Q FEB 26', pase_esperado: 1.28, coef_pase: 1.03125 },
+                { periodo: '2Q FEB 26', pase_esperado: 1.28, coef_pase: 1.03125 },
+                { periodo: '1Q MAR 26', pase_esperado: 1.26, coef_pase: 1.047619 },
+                { periodo: '2Q MAR 26', pase_esperado: 1.26, coef_pase: 1.047619 },
+                { periodo: '1Q ABR 26', pase_esperado: 1.23, coef_pase: 1.073171 },
+                { periodo: '2Q ABR 26', pase_esperado: 1.23, coef_pase: 1.073171 }
+            ],
+            'PEDR ALB': [
+                { periodo: '1Q ENE 26', pase_esperado: 1.42, coef_pase: 1 },
+                { periodo: '2Q ENE 26', pase_esperado: 1.42, coef_pase: 1 },
+                { periodo: '1Q FEB 26', pase_esperado: 1.41, coef_pase: 0.992908 },
+                { periodo: '2Q FEB 26', pase_esperado: 1.41, coef_pase: 0.992908 },
+                { periodo: '1Q MAR 26', pase_esperado: 1.5, coef_pase: 0.933333 },
+                { periodo: '2Q MAR 26', pase_esperado: 1.5, coef_pase: 0.933333 },
+                { periodo: '1Q ABR 26', pase_esperado: 1.45, coef_pase: 0.965517 },
+                { periodo: '2Q ABR 26', pase_esperado: 1.45, coef_pase: 0.965517 }
+            ],
+            'LMB': [
+                { periodo: '1Q ENE 26', pase_esperado: 1.33, coef_pase: 1 },
+                { periodo: '2Q ENE 26', pase_esperado: 1.33, coef_pase: 1 },
+                { periodo: '1Q FEB 26', pase_esperado: 1.28, coef_pase: 1.007812 },
+                { periodo: '2Q FEB 26', pase_esperado: 1.28, coef_pase: 1.007812 },
+                { periodo: '1Q MAR 26', pase_esperado: 1.26, coef_pase: 1.02381 },
+                { periodo: '2Q MAR 26', pase_esperado: 1.26, coef_pase: 1.02381 },
+                { periodo: '1Q ABR 26', pase_esperado: 1.23, coef_pase: 1.04878 },
+                { periodo: '2Q ABR 26', pase_esperado: 1.23, coef_pase: 1.04878 }
+            ],
+            'SUP (Etapa 1)': [
+                { periodo: '1Q ENE 26', pase_esperado: 1.34, coef_pase: 1 },
+                { periodo: '2Q ENE 26', pase_esperado: 1.34, coef_pase: 1 },
+                { periodo: '1Q FEB 26', pase_esperado: 1.35, coef_pase: 0.992593 },
+                { periodo: '2Q FEB 26', pase_esperado: 1.35, coef_pase: 0.992593 },
+                { periodo: '1Q MAR 26', pase_esperado: 1.18, coef_pase: 1.135593 },
+                { periodo: '2Q MAR 26', pase_esperado: 1.18, coef_pase: 1.135593 },
+                { periodo: '1Q ABR 26', pase_esperado: 1.27, coef_pase: 1.15748 },
+                { periodo: '2Q ABR 26', pase_esperado: 1.27, coef_pase: 1.15748 }
+            ],
+            'DELG': [
+                { periodo: '1Q MAR 26', pase_esperado: 1.33, coef_pase: 0.984962 },
+                { periodo: '2Q MAR 26', pase_esperado: 1.33, coef_pase: 0.984962 },
+                { periodo: '1Q ABR 26', pase_esperado: 1.29, coef_pase: 1.015504 },
+                { periodo: '2Q ABR 26', pase_esperado: 1.29, coef_pase: 1.015504 }
+            ]
+        };
+
         let currentPeriod = '2026-04';
         let idxChart = null;
         let certifChart = null;
         let historicalChart = null;
+        let kpaseChart = null;
 
         function formatCurrency(value, isUSD = false) {
             if (value === null || value === undefined) return '-';
@@ -900,6 +996,17 @@
             }
         }
 
+        function closeKpaseHistorical() {
+            const overlay = document.getElementById('kpase-historical-overlay');
+            if (overlay) {
+                overlay.classList.remove('active');
+            }
+            if (kpaseChart) {
+                kpaseChart.destroy();
+                kpaseChart = null;
+            }
+        }
+
         function renderProjection() {
             const data = dataStore['proyeccion'];
             const container = document.getElementById('dashboard-content');
@@ -948,8 +1055,8 @@
         }
 
         function renderDashboard(period) {
-            // Cerrar overlay histórico si está abierto
             closeHistorical();
+            closeKpaseHistorical();
             
             if (period === 'proyeccion') {
                 renderProjection();
@@ -966,7 +1073,6 @@
                 calcularPromedioObra(data.idxs.therock.q1[i], data.idxs.therock.q2[i])
             );
             
-            // Usar promedio ponderado del Excel
             const avgMartella = data.promPonderado.martella;
             const avgTheRock = data.promPonderado.therock;
             
@@ -1175,62 +1281,80 @@
                     </div>
                 </div>
 
-                <div class="certif-grid">
-                    <div class="table-card">
-                        <h3 class="chart-title" style="margin-bottom: 1.5rem;">Detalle de Certificaciones por Obra</h3>
-                        <div style="overflow-x: auto;">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Obra</th>
-                                        <th>Avance Acum.</th>
-                                        <th>Certificado Real</th>
-                                        <th>Certificado Previsto</th>
-                                        <th>Desvío $</th>
-                                        <th>Desvío %</th>
-                                        <th>ADICIONALES</th>
-                                        <th>Estado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${data.certif.obras.map((obra, i) => {
-                                        if (data.certif.certifReal[i] === 0) return '';
-                                        const isUSD = data.certif.isPampUSD[i];
-                                        const adicional = data.certif.adicionales[i];
-                                        return `
-                                            <tr>
-                                                <td class="obra-name">${obra}</td>
-                                                <td class="numeric-cell">${formatPercent(data.certif.avanceAcum[i])}</td>
-                                                <td class="numeric-cell">${formatCurrency(data.certif.certifReal[i], isUSD)}</td>
-                                                <td class="numeric-cell">${formatCurrency(data.certif.certifPrevisto[i], isUSD)}</td>
-                                                <td class="numeric-cell" style="color: ${data.certif.desvio[i] > 0 ? 'var(--success)' : 'var(--danger)'}">
-                                                    ${formatCurrency(data.certif.desvio[i], isUSD)}
-                                                </td>
-                                                <td class="numeric-cell">${formatPercent(data.certif.desvioPct[i])}</td>
-                                                <td class="numeric-cell">
-                                                   ${adicional != null ? formatCurrency(adicional, isUSD) : '-'}
-                                                </td>
-                                                <td>${getStatusBadge(data.certif.desvioPct[i])}</td>
-                                            </tr>
-                                        `;
-                                    }).join('')}
-                                </tbody>
-                            </table>
+                <div class="table-card">
+                    <h3 class="chart-title" style="margin-bottom: 1.5rem;">Detalle de Certificaciones por Obra</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Obra</th>
+                                    <th>Avance Acum.</th>
+                                    <th>Certificado Real</th>
+                                    <th>Certificado Previsto</th>
+                                    <th>Desvío $</th>
+                                    <th>Desvío %</th>
+                                    <th>ADICIONALES</th>
+                                    <th>Pase Licitación</th>
+                                    <th>Pase Esperado</th>
+                                    <th>Coef. de Pase<br><span class="coef-hint">💡 Click para ver histórico</span></th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.certif.obras.map((obra, i) => {
+                                    if (data.certif.certifReal[i] === 0) return '';
+                                    const isUSD = data.certif.isPampUSD[i];
+                                    const adicional = data.certif.adicionales[i];
+                                    const kpaseData = data.kpase[obra] || { pase_licitacion: null, pase_esperado: null, coef_pase: null };
+                                    const hasKpase = kpaseData.coef_pase !== null;
+                                    
+                                    return `
+                                        <tr>
+                                            <td class="obra-name">${obra}</td>
+                                            <td class="numeric-cell">${formatPercent(data.certif.avanceAcum[i])}</td>
+                                            <td class="numeric-cell">${formatCurrency(data.certif.certifReal[i], isUSD)}</td>
+                                            <td class="numeric-cell">${formatCurrency(data.certif.certifPrevisto[i], isUSD)}</td>
+                                            <td class="numeric-cell" style="color: ${data.certif.desvio[i] > 0 ? 'var(--success)' : 'var(--danger)'}">
+                                                ${formatCurrency(data.certif.desvio[i], isUSD)}
+                                            </td>
+                                            <td class="numeric-cell">${formatPercent(data.certif.desvioPct[i])}</td>
+                                            <td class="numeric-cell">
+                                               ${adicional != null ? formatCurrency(adicional, isUSD) : '-'}
+                                            </td>
+                                            <td class="numeric-cell">${kpaseData.pase_licitacion ? formatNumber(kpaseData.pase_licitacion) : '-'}</td>
+                                            <td class="numeric-cell">${kpaseData.pase_esperado ? formatNumber(kpaseData.pase_esperado) : '-'}</td>
+                                            <td class="numeric-cell gray-highlight-col ${hasKpase ? 'clickable-coef' : ''}" 
+                                                ${hasKpase ? `onclick="showKpaseHistorical('${obra}')"` : ''}>
+                                                ${kpaseData.coef_pase ? formatNumber(kpaseData.coef_pase) : '-'}
+                                            </td>
+                                            <td>${getStatusBadge(data.certif.desvioPct[i])}</td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="historical-overlay" id="kpase-historical-overlay">
+                        <button class="historical-close" onclick="closeKpaseHistorical()">×</button>
+                        <h3 class="chart-title" id="kpase-historical-title" style="margin-bottom: 1.5rem;">Serie Histórica de Coeficiente de Pase</h3>
+                        <div style="position: relative; height: calc(100% - 80px);">
+                            <canvas id="kpaseChart"></canvas>
                         </div>
                     </div>
+                </div>
 
-                    <div class="chart-card">
-                        <div class="chart-header">
-                            <div>
-                                <h3 class="chart-title">Distribución de Certificaciones</h3>
-                                <p class="chart-subtitle">Aporte por obra del total del certificado mensual</p>
-                            </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div>
+                            <h3 class="chart-title">Distribución de Certificaciones</h3>
+                            <p class="chart-subtitle">Aporte por obra del total del certificado mensual</p>
                         </div>
-                        <div style="position: relative; height: 420px; padding-top: 20px;">
-                            <canvas id="certifChart"></canvas>
-                        </div>
-                        <p class="chart-note">Nota: Estos valores están referenciados al CAC base propio de cada obra.</p>
                     </div>
+                    <div style="position: relative; height: 420px; padding-top: 20px;">
+                        <canvas id="certifChart"></canvas>
+                    </div>
+                    <p class="chart-note">Nota: Estos valores están referenciados al CAC base propio de cada obra.</p>
                 </div>
 
                 ${showDefinitions ? `
@@ -1425,7 +1549,6 @@
                 y: val
             })).filter(p => p.y !== null);
 
-            // Determinar el rango de periodos donde la obra tiene datos
             const periodosConDatos = new Set();
             obraData.martella.forEach((val, i) => {
                 if (val !== null) periodosConDatos.add(i);
@@ -1438,7 +1561,6 @@
             const minIndex = Math.min(...indicesConDatos);
             const maxIndex = Math.max(...indicesConDatos);
 
-            // Datos de promedio ponderado solo para el rango de periodos donde la obra existe
             const promMartella = promedioPonderadoHistorico.martella
                 .map((val, i) => ({
                     x: promedioPonderadoHistorico.periodos[i],
@@ -1556,6 +1678,129 @@
                                 display: true,
                                 color: 'rgba(0, 0, 0, 0.1)',
                                 borderDash: [3, 3]
+                            },
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 45,
+                                font: {
+                                    family: 'JetBrains Mono',
+                                    size: 10
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function showKpaseHistorical(obra) {
+            const overlay = document.getElementById('kpase-historical-overlay');
+            const title = document.getElementById('kpase-historical-title');
+            
+            const kpaseData = dataStore[currentPeriod].kpase[obra];
+            const paseLicitacion = kpaseData ? kpaseData.pase_licitacion : null;
+            
+            title.textContent = `Serie Histórica - ${obra} - Coef. de Pase (Pase Licitación: ${paseLicitacion ? formatNumber(paseLicitacion) : 'N/A'})`;
+            overlay.classList.add('active');
+            
+            renderKpaseChart(obra);
+        }
+
+        function renderKpaseChart(obra) {
+            const ctx = document.getElementById('kpaseChart');
+            
+            if (kpaseChart) {
+                kpaseChart.destroy();
+            }
+
+            const obraData = kpaseHistorico[obra];
+            if (!obraData) return;
+
+            const labels = obraData.map(d => d.periodo);
+            const paseEsperado = obraData.map(d => d.pase_esperado);
+            const coefPase = obraData.map(d => d.coef_pase);
+
+            kpaseChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Pase Esperado',
+                            data: paseEsperado,
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 2,
+                            borderRadius: 6
+                        },
+                        {
+                            label: 'Coef. de Pase',
+                            data: coefPase,
+                            backgroundColor: 'rgba(255, 159, 64, 0.7)',
+                            borderColor: 'rgba(255, 159, 64, 1)',
+                            borderWidth: 2,
+                            borderRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: {
+                                font: {
+                                    size: 14,
+                                    weight: 'bold',
+                                    family: 'Manrope'
+                                },
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            padding: 12,
+                            titleFont: {
+                                size: 14,
+                                weight: '700',
+                                family: 'Manrope'
+                            },
+                            bodyFont: {
+                                size: 13,
+                                family: 'JetBrains Mono'
+                            }
+                        },
+                        datalabels: {
+                            anchor: 'end',
+                            align: 'top',
+                            color: '#1e293b',
+                            font: {
+                                weight: 'bold',
+                                size: 11,
+                                family: 'JetBrains Mono'
+                            },
+                            formatter: function(value) {
+                                return value.toFixed(2);
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                font: {
+                                    family: 'JetBrains Mono'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
                             },
                             ticks: {
                                 maxRotation: 45,
