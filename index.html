@@ -860,38 +860,38 @@
         // Serie histórica de k y pase
         const kpaseHistorico = {
             'SM': [
-                { periodo: 'Ene 26', pase_esperado: 1.17, coef_pase: 1.034188 },
-                { periodo: 'Feb 26', pase_esperado: 1.19, coef_pase: 1.016807 },
-                { periodo: 'Mar 26', pase_esperado: 1.22, coef_pase: 0.991803 },
-                { periodo: 'Abr 26', pase_esperado: 1.29, coef_pase: 0.937984 }
+                { periodo: 'Ene 26', pase_licitacion: 1.21, pase_esperado: 1.17, coef_pase: 1.034188 },
+                { periodo: 'Feb 26', pase_licitacion: 1.21, pase_esperado: 1.19, coef_pase: 1.016807 },
+                { periodo: 'Mar 26', pase_licitacion: 1.21, pase_esperado: 1.22, coef_pase: 0.991803 },
+                { periodo: 'Abr 26', pase_licitacion: 1.21, pase_esperado: 1.29, coef_pase: 0.937984 }
             ],
             'ARN': [
-                { periodo: 'Ene 26', pase_esperado: 1.35, coef_pase: 1.014815 },
-                { periodo: 'Feb 26', pase_esperado: 1.28, coef_pase: 1.03125 },
-                { periodo: 'Mar 26', pase_esperado: 1.26, coef_pase: 1.047619 },
-                { periodo: 'Abr 26', pase_esperado: 1.23, coef_pase: 1.073171 }
+                { periodo: 'Ene 26', pase_licitacion: 1.32, pase_esperado: 1.35, coef_pase: 1.014815 },
+                { periodo: 'Feb 26', pase_licitacion: 1.32, pase_esperado: 1.28, coef_pase: 1.03125 },
+                { periodo: 'Mar 26', pase_licitacion: 1.32, pase_esperado: 1.26, coef_pase: 1.047619 },
+                { periodo: 'Abr 26', pase_licitacion: 1.32, pase_esperado: 1.23, coef_pase: 1.073171 }
             ],
             'PEDR ALB': [
-                { periodo: 'Ene 26', pase_esperado: 1.42, coef_pase: 1 },
-                { periodo: 'Feb 26', pase_esperado: 1.41, coef_pase: 0.992908 },
-                { periodo: 'Mar 26', pase_esperado: 1.5, coef_pase: 0.933333 },
-                { periodo: 'Abr 26', pase_esperado: 1.45, coef_pase: 0.965517 }
+                { periodo: 'Ene 26', pase_licitacion: 1.4, pase_esperado: 1.42, coef_pase: 1 },
+                { periodo: 'Feb 26', pase_licitacion: 1.4, pase_esperado: 1.41, coef_pase: 0.992908 },
+                { periodo: 'Mar 26', pase_licitacion: 1.4, pase_esperado: 1.5, coef_pase: 0.933333 },
+                { periodo: 'Abr 26', pase_licitacion: 1.4, pase_esperado: 1.45, coef_pase: 0.965517 }
             ],
             'LMB': [
-                { periodo: 'Ene 26', pase_esperado: 1.33, coef_pase: 1 },
-                { periodo: 'Feb 26', pase_esperado: 1.28, coef_pase: 1.007812 },
-                { periodo: 'Mar 26', pase_esperado: 1.26, coef_pase: 1.02381 },
-                { periodo: 'Abr 26', pase_esperado: 1.23, coef_pase: 1.04878 }
+                { periodo: 'Ene 26', pase_licitacion: 1.29, pase_esperado: 1.33, coef_pase: 1 },
+                { periodo: 'Feb 26', pase_licitacion: 1.29, pase_esperado: 1.28, coef_pase: 1.007812 },
+                { periodo: 'Mar 26', pase_licitacion: 1.29, pase_esperado: 1.26, coef_pase: 1.02381 },
+                { periodo: 'Abr 26', pase_licitacion: 1.29, pase_esperado: 1.23, coef_pase: 1.04878 }
             ],
             'SUP (Etapa 1)': [
-                { periodo: 'Ene 26', pase_esperado: 1.34, coef_pase: 1 },
-                { periodo: 'Feb 26', pase_esperado: 1.35, coef_pase: 0.992593 },
-                { periodo: 'Mar 26', pase_esperado: 1.18, coef_pase: 1.135593 },
-                { periodo: 'Abr 26', pase_esperado: 1.27, coef_pase: 1.15748 }
+                { periodo: 'Ene 26', pase_licitacion: 1.47, pase_esperado: 1.34, coef_pase: 1 },
+                { periodo: 'Feb 26', pase_licitacion: 1.47, pase_esperado: 1.35, coef_pase: 0.992593 },
+                { periodo: 'Mar 26', pase_licitacion: 1.47, pase_esperado: 1.18, coef_pase: 1.135593 },
+                { periodo: 'Abr 26', pase_licitacion: 1.47, pase_esperado: 1.27, coef_pase: 1.15748 }
             ],
             'DELG': [
-                { periodo: 'Mar 26', pase_esperado: 1.33, coef_pase: 0.984962 },
-                { periodo: 'Abr 26', pase_esperado: 1.29, coef_pase: 1.015504 }
+                { periodo: 'Mar 26', pase_licitacion: 1.31, pase_esperado: 1.33, coef_pase: 0.984962 },
+                { periodo: 'Abr 26', pase_licitacion: 1.31, pase_esperado: 1.29, coef_pase: 1.015504 }
             ]
         };
 
@@ -1299,9 +1299,9 @@
                                             <td class="numeric-cell">
                                                ${adicional != null ? formatCurrency(adicional, isUSD) : '-'}
                                             </td>
-                                            <td>${getStatusBadge(data.certif.desvioPct[i])}</td>
                                             <td class="numeric-cell">${kpaseData.pase_licitacion ? formatNumber(kpaseData.pase_licitacion) : '-'}</td>
                                             <td class="numeric-cell">${kpaseData.pase_esperado ? formatNumber(kpaseData.pase_esperado) : '-'}</td>
+                                            <td>${getStatusBadge(data.certif.desvioPct[i])}</td>
                                             <td class="numeric-cell gray-highlight-col ${hasKpase ? 'clickable-coef' : ''}" 
                                                 ${hasKpase ? `onclick="showKpaseHistorical('${obra}')"` : ''}>
                                                 ${kpaseData.coef_pase ? formatNumber(kpaseData.coef_pase) : '-'}
@@ -1541,7 +1541,7 @@
             
             // Si estamos en Marzo 2026, excluir los últimos dos periodos (Abril 2026)
             if (currentPeriod === '2026-03') {
-                maxIndex = Math.min(maxIndex, 19); // Hasta 2Q MAR 26 (índice 19)
+                maxIndex = 19; // Hasta 2Q MAR 26 (índice 19), excluir Abril (índices 20-21)
             }
 
             const promMartella = promedioPonderadoHistorico.martella
@@ -1680,10 +1680,7 @@
             const overlay = document.getElementById('kpase-historical-overlay');
             const title = document.getElementById('kpase-historical-title');
             
-            const kpaseData = dataStore[currentPeriod].kpase[obra];
-            const paseLicitacion = kpaseData ? kpaseData.pase_licitacion : null;
-            
-            title.textContent = `Serie Histórica - ${obra} - Coef. de Pase (Pase Licitación: ${paseLicitacion ? formatNumber(paseLicitacion) : 'N/A'})`;
+            title.textContent = `Serie Histórica - ${obra} - Coef. de Pase`;
             overlay.classList.add('active');
             
             renderKpaseChart(obra);
@@ -1706,6 +1703,7 @@
             }
             
             const labels = filteredObraData.map(d => d.periodo);
+            const paseLicitacion = filteredObraData.map(d => d.pase_licitacion);
             const paseEsperado = filteredObraData.map(d => d.pase_esperado);
             const coefPase = filteredObraData.map(d => d.coef_pase);
 
@@ -1714,6 +1712,14 @@
                 data: {
                     labels: labels,
                     datasets: [
+                        {
+                            label: 'Pase Licitación',
+                            data: paseLicitacion,
+                            backgroundColor: 'rgba(76, 175, 80, 0.7)',
+                            borderColor: 'rgba(76, 175, 80, 1)',
+                            borderWidth: 2,
+                            borderRadius: 6
+                        },
                         {
                             label: 'Pase Esperado',
                             data: paseEsperado,
